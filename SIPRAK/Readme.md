@@ -32,7 +32,7 @@ SIPRAK bertujuan untuk menggantikan proses peminjaman manual yang masih menganda
 
 - Autentikasi pengguna menggunakan JSON Web Token (JWT)
 - Pengajuan peminjaman ruang dan fasilitas kampus
-- Menampilkan status peminjaman (pending, approved, rejected)
+- Menampilkan status peminjaman (pending)
 - Penghapusan data peminjaman
 - Manajemen sesi pengguna (logout)
 
