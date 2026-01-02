@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+
+  loans Loan[] // ⬅️ INI YANG KEMARIN KURANG / BELUM TERBACA
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  Peminjaman Peminjaman[]
+}
+
+model Loan {
+  id         Int       @id @default(autoincrement())
+  toolName   String
+  quantity   Int
+  borrowDate DateTime
+  returnDate DateTime?
+  status     String    @default("dipinjam")
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Peminjaman {
+  id             Int      @id @default(autoincrement())
+  namaAlat       String
+  jumlah         Int
+  tanggalPinjam  DateTime
+  tanggalKembali DateTime
+  status         String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
