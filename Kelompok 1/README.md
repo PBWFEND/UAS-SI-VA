@@ -3,7 +3,7 @@ LabInventory – RESTful API Backend & Web App
 Sistem Manajemen Inventaris Laboratorium
 Project UAS – Backend Development (Express.js + Prisma + JWT)
 
-1. Deskripsi Proyek
+# Deskripsi Proyek
 
 LabInventory adalah sistem manajemen inventaris laboratorium berbasis web yang dirancang untuk membantu pengelolaan alat, bahan, dan perlengkapan laboratorium secara terstruktur.
 Aplikasi ini memungkinkan pengguna untuk mengelola inventaris pribadi menggunakan autentikasi JWT dan menyediakan fitur CRUD lengkap.
@@ -12,7 +12,7 @@ Proyek ini dikembangkan sebagai tugas UAS Backend Development dengan ketentuan w
 
 
 
-2. Anggota Kelompok
+# Anggota Kelompok
 
 | Nama        | NIM          | Tugas                                                                                |
 | ----------- | ------------ | ------------------------------------------------------------------------------------ |
@@ -21,74 +21,84 @@ Proyek ini dikembangkan sebagai tugas UAS Backend Development dengan ketentuan w
 | Dede Dian P | 230660221010 | Anggota Kelompok                                                                     |
 | Agil P      | 230660221095 | Anggota Kelompok                                                                     |
 | Febry       | 230660221015 | Anggota Kelompok                                                                     |
-| Galih P S   | 230660221002 | Anggota Kelompok 
 
-3. Teknologi yang Digunakan
-Backend
 
-Node.js + Express.js
+# 🛠️ Teknologi yang Digunakan
+🧠 Backend
 
-Prisma ORM
+Node.js + Express.js — REST API & server-side logic
 
-MySQL
+Prisma ORM — Database ORM & migration
 
-JWT Authentication
+MySQL — Database relasional
 
-Bcrypt Password Hashing
+JWT (JSON Web Token) — Autentikasi & otorisasi
 
-Express-Validator
+Bcrypt — Hashing password pengguna
 
-Frontend
+Express Validator — Validasi input request
 
-React + TypeScript
+🎨 Frontend
 
-Vite
+React + TypeScript — UI & type safety
 
-Tailwind CSS
+Vite — Development server & build tool
 
-Axios
+Tailwind CSS — Utility-first CSS framework
 
-Deployment
+Axios — HTTP client untuk komunikasi API
+
+☁️ Deployment
 
 Frontend: Netlify
-URL: https://lab-inventory-kel1-uas.netlify.app
+
+Live URL:
+🔗 https://lab-inventory-kel1-uas.netlify.app
 
 Backend: Local Server (port 3000)
 
-4. Fitur Utama Aplikasi
-Autentikasi Pengguna
+# 🚀 Fitur Utama Aplikasi
+🔐 Autentikasi Pengguna
 
-Register
+Register pengguna baru
 
-Login
+Login pengguna
 
-JWT Token
+Autentikasi menggunakan JWT (JSON Web Token)
 
-Proteksi rute private
+Proteksi rute private menggunakan middleware
 
-Hashing password (Bcrypt)
+Hashing password dengan Bcrypt untuk keamanan data
 
-Manajemen Inventaris (CRUD)
+📦 Manajemen Inventaris (CRUD)
 
 Tambah item inventaris
 
-Lihat seluruh item milik user
+Lihat seluruh item inventaris milik user
 
-Update item
+Update data item inventaris
 
-Hapus item
+Hapus item inventaris
 
 Relasi One-to-Many antara User → Inventory
 
-Fitur Pendukung
+⚙️ Fitur Pendukung
 
-Validasi input (express-validator)
+Validasi input menggunakan express-validator
 
-Kategori inventaris
+Kategori inventaris untuk pengelompokan item
 
-Multi-user, namun user hanya dapat melihat inventaris miliknya sendiri
+Multi-user system, setiap user hanya dapat mengakses inventaris miliknya sendiri
 
-5. Struktur Database
+✅ Keunggulan Sistem
+
+Keamanan data terjamin dengan JWT & Bcrypt
+
+Struktur backend terpisah (Controller, Routes, Middleware)
+
+Cocok untuk digital startup, project UAS, dan portfolio GitHub
+
+# Struktur Database
 Diagram Relasi (ERD)
 
 Relasi: User (1) → (Many) Inventory
@@ -107,86 +117,97 @@ Inventory
 - description
 - createdAt
 - userId (FK)
-
-6. Struktur Folder Proyek
-
-Frontend (Vite + React)
-
+\
+# 📁 Struktur Folder Proyek
+🖥️ Frontend (Vite + React)
 lab-inventory-hub/
-    │── public/
-    │── src/
-    │   ├── components/
-    │   ├── contexts/
-    │   ├── hooks/
-    │   ├── lib/
-    │   ├── pages/
-    │   ├── App.tsx
-    │   ├── main.tsx
-    │── index.html
-    │── .env
+├── public/
+├── src/
+│   ├── components/        # Reusable UI components
+│   ├── contexts/          # React Context (Auth, Global State, dll)
+│   ├── hooks/             # Custom hooks
+│   ├── lib/               # Helper / utility functions
+│   ├── pages/             # Halaman utama aplikasi
+│   ├── App.tsx            # Root component
+│   └── main.tsx           # Entry point React
+├── index.html
+└── .env                   # Environment variables
 
-Backend (Express + Prisma)
-
+🧠 Backend (Express + Prisma)
 lab-inventory-backend/
-    │── prisma/
-    │   ├── migrations/
-    │   ├── schema.prisma
-    │── src/
-    │   ├── controllers/
-    │   │   ├── authController.js
-    │   │   ├── inventoryController.js
-    │   ├── middlewares/
-    │   │   ├── authMiddleware.js
-    │   ├── routes/
-    │   │   ├── auth.js
-    │   │   ├── inventoryRoutes.js
-    │   ├── utils/
-    │   │   ├── prisma.js
-    │   ├── index.js
-    │── .env
+├── prisma/
+│   ├── migrations/        # Database migrations
+│   └── schema.prisma      # Prisma schema
+├── src/
+│   ├── controllers/       # Logic bisnis aplikasi
+│   │   ├── authController.js
+│   │   └── inventoryController.js
+│   ├── middlewares/       # Middleware Express
+│   │   └── authMiddleware.js
+│   ├── routes/            # API routes
+│   │   ├── auth.js
+│   │   └── inventoryRoutes.js
+│   ├── utils/             # Utility functions
+│   │   └── prisma.js      # Prisma client
+│   └── index.js           # Entry point server
+└── .env                   # Environment variables
 
-7. Instalasi & Setup
-A. Backend
-1. Install Dependencies
+
+# ⚙️ Instalasi & Setup
+🔧 A. Backend (Express + Prisma)
+1️⃣ Install Dependencies
 npm install
 
-2. Konfigurasi .env
+2️⃣ Konfigurasi Environment Variables
+
+Buat file .env di root backend:
+
 DATABASE_URL="mysql://root:@localhost:3306/lab_inventory"
 
-# Server
+# Server Configuration
 PORT=3000
 NODE_ENV=development
 
-# JWT
+# JWT Configuration
 JWT_SECRET="your_super_secret_jwt_key_change_this_in_production"
 
-3. Migrasi Database
+3️⃣ Migrasi Database
 npx prisma migrate dev
 
-4. Run Server
+4️⃣ Jalankan Server
 npm run dev
 
 
-Backend berjalan pada:
+📌 Backend berjalan pada:
+
 http://localhost:3000
 
-B. Frontend
-1. Install Dependencies
+🎨 B. Frontend (Vite + React)
+1️⃣ Install Dependencies
 npm install
 
-2. Konfigurasi .env
+2️⃣ Konfigurasi Environment Variables
+
+Buat file .env di root frontend:
+
 VITE_API_URL=http://localhost:3000/api
 
-3. Running Frontend
+3️⃣ Jalankan Frontend
 npm run dev
 
 
-Frontend berjalan pada:
+📌 Frontend berjalan pada:
 
-Local: http://localhost:8080
+Local   : http://localhost:8080
+Network : http://192.168.18.5:8080
 
-Network: http://192.168.18.5:8080/
+✅ Catatan
 
+Pastikan MySQL sudah berjalan sebelum migrasi Prisma
+
+Pastikan PORT backend dan VITE_API_URL sesuai
+
+Jangan upload file .env ke GitHub (gunakan .gitignore)
 8. API Documentation (Ringkas)
 Auth Routes
 
@@ -224,7 +245,7 @@ Inventory Routes (Protected)
 | 07 | CRUD Resource  | Selesai | CRUD Inventory (One-to-Many)         |
 | 08 | Deployment     | Selesai | Netlify (Frontend)                   |
 
-10. Deployment
+# Deployment
 
 Frontend dihosting pada Netlify:
 
@@ -234,7 +255,7 @@ Backend berjalan pada lokal:
 
 http://localhost:3000
 
-11. Kesimpulan
+# Kesimpulan
 
 Proyek LabInventory berhasil memenuhi seluruh persyaratan UAS Backend Development, termasuk implementasi RESTful API, autentikasi JWT, validasi input, relasi database, serta integrasi penuh dengan frontend berbasis React + Vite.
 
