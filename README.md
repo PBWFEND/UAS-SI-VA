@@ -1,140 +1,125 @@
-# **PROJECT UAS – BACKEND DEVELOPMENT (KELOMPOK)**
+# VibeGraph – Creative Studio Booking System
+**Tugas Besar UAS Pemrograman Berbasis Web Back End** **Kelompok 5 - Kelas SI-VA**
 
-## **Tugas Utama**
+---
 
-Setiap **kelompok** membangun **RESTful API Backend** menggunakan **Express.js + Prisma + JWT** pada topik bebas hasil riset kelompok.
-Topik harus berasal dari **kasus nyata**, **permasalahan di lingkungan kampus**, atau **ide orisinal**, dan wajib memiliki **relasi data serta fitur CRUD lengkap**.
+## 1. 📝 Deskripsi Aplikasi
+VibeGraph adalah platform manajemen pemesanan (booking) studio foto kreatif berbasis web. Aplikasi ini memungkinkan pelanggan untuk memilih berbagai kategori layanan fotografi (Self-Photo, Pro Studio, Graduation, dll), memilih lokasi cabang, dan mengelola reservasi mereka secara real-time. 
 
-`API` harus dapat digunakan oleh `frontend` (web atau mobile), baik buatan sendiri maupun _mock client_.
+Sistem ini dibangun dengan fokus pada keamanan data menggunakan autentikasi JWT dan enkripsi password, serta integrasi database relasional untuk menyimpan riwayat pesanan pengguna.
 
-## **A. Ketentuan Kelompok**
+## 2. 👥 Anggota Kelompok & Pembagian Tugas
 
-* **Jumlah anggota**: 2–4 mahasiswa.
-* Setiap anggota wajib berkontribusi (coding, dokumentasi, presentasi).
-* Commit di GitHub harus mencerminkan kontribusi tiap anggota.
-* Semua anggota harus paham keseluruhan sistem, bukan hanya bagian yang dikerjakan.
+| Nama Anggota | NIM | Peran & Kontribusi Utama |
+| :--- | :--- | :--- |
+| **Dina Salwa Mannatu** | 230660221011 | **Ketua Kelompok**. Full Stack Developer: Mengembangkan seluruh logika Backend (Express, Prisma), Frontend (React), dan integrasi API. Mengerjakan dari awal hingga akhir. |
+| **Clara Desmiati** | 230660221005 | **Topik & Dokumentasi**. Menentukan topik, menyusun dokumentasi akhir, Pengujian fungsionalitas fitur (Testing). |
+| **Yulia Rizky Afifah** | 230660221090 | **-**. Pengujian fungsionalitas fitur (Testing)|
+| **Sharel Faturahman** | 230660221108 | **-**. Pengujian fungsionalitas fitur (Testing)|
 
-## **B. Persyaratan Teknis Wajib (Checklist Proyek)**
+## 3. 🛠️ Teknologi yang Digunakan
+- **Backend:** Node.js & Express.js
+- **ORM & Database:** Prisma ORM & MySQL
+- **Security:** JSON Web Token (JWT) & Bcrypt Password Hashing
+- **Validation:** Express-Validator
+- **Frontend:** React.js, Tailwind CSS, & Axios
+- **Deployment:** Netlify (Frontend)
 
-| No. | Modul Wajib        | Deskripsi Implementasi                                                              |
-| --: | ------------------ | ----------------------------------------------------------------------------------- |
-|  01 | **Express.js**     | Backend dibangun menggunakan Express.                                               |
-|  02 | **Prisma ORM**     | Prisma sebagai ORM untuk database MySQL/PostgreSQL (atau Supabase sebagai hosting). |
-|  03 | **JWT Auth**       | Otentikasi menggunakan token JWT untuk login + proteksi rute.                       |
-|  04 | **Validasi Input** | Menggunakan express-validator untuk semua input Auth dan CRUD.                      |
-|  05 | **Auth API**       | Register & Login dengan hashing password (Bcrypt).                                  |
-|  06 | **User API**       | Contoh minimal: `GET /api/users/profile`.                                           |
-|  07 | **CRUD Resource**  | CRUD lengkap untuk 1 resource utama (One-to-Many dengan User).                      |
-|  08 | **Deployment**     | Deploy ke Vercel, Railway, Render, Netlify, Cloudflare, atau Supabase.              |
-
-## **C. Panduan Pemilihan Topik (Riset Kelompok)**
-
-Topik harus memenuhi:
-
-1. **Relasi One-to-Many** antara User → Resource.
-2. **CRUD lengkap** dan membutuhkan validasi.
-3. **Mengandung ownership**, sehingga hanya pemilik yang dapat mengakses datanya.
-    - Contoh (dalam logika):
-    ❌ User A mencoba menghapus Task milik User B → API harus menolak.
-
-Contoh topik:
-
-* Aplikasi Penjadwalan Praktikum
-* Manajemen Inventaris Laboratorium
-* Sistem Menu & Pesanan untuk UMKM
-* Buku Resep Online
-* Pengelolaan Tugas/To-Do Kelompok
-
-## **D. Pembagian Tugas Minimal**
-
-Setiap kelompok harus menentukan peran (boleh dirangkap):
-
-* Backend Engineer (struktur project + Express setup)
-* Database Engineer (schema Prisma)
-* Auth Specialist (JWT, hashing, middleware)
-* CRUD Specialist (rute resource)
-* DevOps/Deployment
-* Dokumentasi (README + API Docs + ERD)
-
-## **E. Frontend (Sesuai Keinginan Mahasiswa)**
-
-Kelompok **wajib** membuat **antarmuka sederhana** untuk mengonsumsi API backend.
-Framework bebas: React, Vue, Svelte, atau lainnya.
-
-### **Contoh Alur Implementasi Frontend**
-
-#### **1. Login Page**
-
-* Form input: **email/username** & **password**
-* Saat tombol "Login" ditekan:
-
-  * Hit endpoint **POST /api/auth/login**
-  * Jika sukses → ambil token dari response
-  * Simpan token ke **localStorage** atau **sessionStorage**
-
-#### **2. Dashboard Page**
-
-Menampilkan data resource kelompok (misalnya daftar kontak, daftar tugas, daftar menu).
-
-Contoh alur:
-
-* Lakukan request:
-  `GET /api/contacts` (Token dikirim melalui Header Authorization)
-
-* Render tabel berisi daftar data.
-
-* Sediakan tombol **Tambah Data**:
-
-  * Munculkan form/modal.
-  * Setelah submit → Hit endpoint `POST /api/contacts`.
-  * Refresh tabel.
-
-* Sediakan tombol **Hapus** per baris:
-
-  * Memanggil endpoint `DELETE /api/contacts/:id`
-  * Data akan terhapus, lalu reload tampilan.
-
-> **Catatan:** Resource “contacts” hanyalah contoh.
-> Kelompok harus menyesuaikan dengan resource pilihan masing-masing.
+## 4. 🗄️ Struktur Database (ERD)
+Aplikasi menggunakan relasi **One-to-Many** antara tabel `User` (Pelanggan) dan `Booking` (Pesanan).
 
 
-# **F. Output Proyek (Wajib Dikumpulkan)**
 
-### **1. Repository GitHub**
+- **User**: Menyimpan data akun (1 user bisa memiliki banyak booking).
+- **Booking**: Menyimpan detail pesanan yang terkait dengan ID pengguna.
 
-Berisi:
+## 5. 📂 Struktur Folder Proyek
 
-* Source code backend
-* `.env.example`
-* Dokumentasi API (Markdown/Postman/Insomnia)
-* Pembagian tugas per anggota
+### Backend (Express + Prisma) 
+```text
+backend-api/
+├── controllers/
+│   ├── authController.js     # Logika Register & Login
+│   └── bookingController.js  # Logika CRUD Pesanan
+├── middleware/
+│   └── authMiddleware.js    # Verifikasi JWT Token
+├── prisma/
+│   ├── schema.prisma        # Definisi Tabel & Relasi
+│   └── client.js            # Inisialisasi Prisma Client
+├── .env                     # Variabel Sensitif (Hidden)
+├── .env.example             # Template Variabel Environment
+├── index.js                 # Entry Point & Validasi Route
+└── package.json
 
-### **2. Link Deployment**
+### Frontend (React.js)
+frontend-app/
+├── public/
+│   └── _redirects           # Konfigurasi Navigasi Netlify
+├── src/
+│   ├── App.jsx              # Logika Utama & Routing Frontend
+│   └── main.jsx
+├── index.html
+├── package.json
+└── tailwind.config.js
 
-API online di hosting pilihan kelompok.
 
-### **3. Dokumentasi README**
+## 6. 🚀 Instalasi & Cara Setup
+1. **Clone Repository:**
+   ```bash
+   git clone [https://github.com/username/vibegraph-project.git](https://github.com/username/vibegraph-project.git)
+Setup Backend:
+- Masuk ke folder backend: cd backend
+- Install dependencies: npm install
+- Salin .env.example menjadi .env dan sesuaikan DATABASE_URL.
+- Jalankan migrasi: npx prisma migrate dev
+- Jalankan server: node index.js
 
-Wajib berisi:
+Setup Frontend:
+- Masuk ke folder frontend: cd frontend
+- Install dependencies: npm install
+- Jalankan aplikasi: npm run dev
 
-* Deskripsi aplikasi
-* ERD (Opsional)
-* Cara setup & menjalankan project
-* Endpoint penting
-* Kontribusi tiap anggota
 
-### **4. (Opsional) Video Presentasi**
+## 7. 🔗 Dokumentasi API (Endpoints)
 
-5–10 menit berisi demo API + penjelasan kontribusi anggota.
+| Method | Endpoint | Deskripsi | Proteksi | Validasi Input |
+| :--- | :--- | :--- | :--- | :--- |
+| `POST` | `/api/register` | Pendaftaran akun baru | Publik | Nama, Email, Pass (Min 6) |
+| `POST` | `/api/login` | Masuk & mendapatkan Token | Publik | Email & Password |
+| `POST` | `/api/bookings` | Membuat reservasi baru | Private (JWT) | Paket, Tanggal, Lokasi |
+| `GET` | `/api/bookings` | Mengambil riwayat pesanan | Private (JWT) | - |
 
-## **G. Rubrik Penilaian**
 
-| Komponen                 |   Bobot | Kriteria                                         |
-| ------------------------ | ------: | ------------------------------------------------ |
-| **Backend Logic**        | **40%** | CRUD lengkap, relasi benar, error handling rapi. |
-| **Security**             | **20%** | JWT benar, hashing aman, ownership check.        |
-| **Database**             | **15%** | Prisma schema tepat, migrasi berhasil.           |
-| **Validasi**             | **10%** | express-validator digunakan dengan benar.        |
-| **Kolaborasi GitHub**    | **10%** | Commit aktif, kontribusi jelas.                  |
-| **Frontend Integration** |  **5%** | Ada UI sederhana yang mengonsumsi API.           |
+**Booking (Private Routes)**
+Memerlukan Header: Authorization: Bearer <token> | Method | Endpoint | Deskripsi | | :--- | :--- | :--- | | POST | /api/bookings | Membuat reservasi studio baru | | GET | /api/bookings | Melihat riwayat pesanan milik user sendiri |
 
+
+## 8. ✅ Pemenuhan Checklist Proyek UAS
+
+| No | Modul Wajib | Status | Implementasi Teknis |
+| :-- | :--- | :--- | :--- |
+| 01 | **Express.js** | Selesai | Menggunakan Express sebagai web server utama. |
+| 02 | **Prisma ORM** | Selesai | Implementasi Prisma untuk manajemen database MySQL. |
+| 03 | **JWT Auth** | Selesai | Keamanan rute menggunakan JSON Web Token (JWT). |
+| 04 | **Validasi Input** | Selesai | Menggunakan `express-validator` pada sisi Backend. |
+| 05 | **Bcrypt Hashing** | Selesai | Password pengguna dienkripsi sebelum masuk database. |
+| 06 | **Relasi Database**| Selesai | Relasi One-to-Many antara tabel User dan Booking. |
+| 07 | **Deployment** | Selesai | Frontend berhasil dideploy ke layanan Netlify. |
+| 08 | **GitHub Output** | Selesai | Repository menyertakan `.env.example` dan README. |
+
+## 9. 🚀 Instalasi & Setup
+1. **Clone & Install**: `npm install` di folder backend & frontend.
+2. **Database**: Sesuaikan `DATABASE_URL` di `.env` lalu jalankan `npx prisma migrate dev`.
+3. **Run**: Jalankan backend dengan `node index.js` dan frontend dengan `npm run dev`.
+
+## 10. 🌐 Deployment Link
+- **Frontend (Netlify):** [https://vibegraph-kelompok5-uas.netlify.app/]
+- **Backend berjalan pada lokal:** [http://localhost:3000]
+
+File Konfigurasi: .env.example tersedia di folder root backend-api.
+
+## 11. Kesimpulan
+Proyek VibeGraph berhasil memenuhi seluruh persyaratan UAS Backend Development. Aplikasi ini mengintegrasikan sistem autentikasi yang aman, validasi data yang ketat, dan manajemen database relasional untuk menghadirkan solusi booking studio foto yang fungsional.
+
+---
+© 2026 - Kelompok 5 SI-VA • UAS Pemrograman Berbasis Web Back End
