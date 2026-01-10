@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Aplikasi Penjadwalan Praktikum</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+      }
+
+      .login-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 40px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .login-title {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .demo-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        border-left: 4px solid #667eea;
+      }
+
+      .demo-title {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .demo-item {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 1px solid #e9ecef;
+      }
+
+      .demo-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+      }
+
+      .demo-item.active {
+        border-color: #667eea;
+        background: #f0f4ff;
+      }
+
+      .debug-info {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 20px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        display: none; /* Sembunyikan di production */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <div class="logo">
+            <i class="fas fa-flask"></i>
+          </div>
+          <h1 class="login-title">Aplikasi Penjadwalan Praktikum</h1>
+          <p class="text-muted">Masuk untuk mengelola jadwal laboratorium</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="username"> <i class="fas fa-user"></i> Username </label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              placeholder="Masukkan username"
+              required
+              autofocus
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password"> <i class="fas fa-lock"></i> Password </label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              placeholder="Masukkan password"
+              required
+            />
+          </div>
+
+          <div
+            id="errorMsg"
+            class="alert alert-error"
+            style="display: none"
+          ></div>
+
+          <button type="submit" id="loginBtn" class="btn btn-primary btn-block">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+        </form>
+
+        <div class="demo-section">
+          <h4 class="demo-title"><i class="fas fa-key"></i> Kredensial Demo</h4>
+          <p class="text-muted small mb-3">
+            Klik salah satu untuk mengisi form:
+          </p>
+
+          <div
+            class="demo-item demo-credential"
+            data-username="admin"
+            data-password="admin123"
+          >
+            <strong>👑 Administrator</strong>
+            <div class="small">admin / admin123</div>
+          </div>
+
+          <div
+            class="demo-item demo-credential"
+            data-username="asisten"
+            data-password="asisten123"
+          >
+            <strong>👨‍🎓 Asisten Lab</strong>
+            <div class="small">asisten / asisten123</div>
+          </div>
+
+          <div
+            class="demo-item demo-credential"
+            data-username="dosen"
+            data-password="dosen123"
+          >
+            <strong>👨‍🏫 Dosen</strong>
+            <div class="small">dosen / dosen123</div>
+          </div>
+        </div>
+
+        <div class="debug-info" id="debugInfo">
+          <div><strong>Debug Info:</strong></div>
+          <div id="sessionStatus">Checking session...</div>
+          <div id="apiStatus">Checking API...</div>
+        </div>
+
+        <div class="text-center mt-4">
+          <p class="text-muted small">
+            <i class="fas fa-info-circle"></i>
+            Sistem Penjadwalan Praktikum v1.0
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+      // Debug script
+      async function debugCheck() {
+        try {
+          // Check session
+          const sessionResponse = await fetch("/api/current-user", {
+            credentials: "include",
+          });
+          document.getElementById(
+            "sessionStatus"
+          ).textContent = `Session: ${sessionResponse.status} ${sessionResponse.statusText}`;
+
+          // Test API
+          const testData = { username: "test", password: "test" };
+          const apiResponse = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(testData),
+          });
+          document.getElementById(
+            "apiStatus"
+          ).textContent = `API: ${apiResponse.status} ${apiResponse.statusText}`;
+        } catch (error) {
+          document.getElementById(
+            "debugInfo"
+          ).innerHTML += `<div class="text-danger">Error: ${error.message}</div>`;
+        }
+      }
+
+      // Uncomment untuk debug
+      // debugCheck();
+      // document.getElementById('debugInfo').style.display = 'block';
+    </script>
+  </body>
+</html>

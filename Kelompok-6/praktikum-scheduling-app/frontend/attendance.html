@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kehadiran - Aplikasi Penjadwalan Praktikum</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar container">
+        <div class="logo">
+          <i class="fas fa-flask"></i>
+          <span>LabSchedule</span>
+        </div>
+
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+          </li>
+          <li>
+            <a href="scheduling.html"
+              ><i class="fas fa-calendar-alt"></i> Penjadwalan</a
+            >
+          </li>
+          <li>
+            <a href="attendance.html" class="active"
+              ><i class="fas fa-clipboard-check"></i> Kehadiran</a
+            >
+          </li>
+          <li>
+            <a href="reports.html"><i class="fas fa-chart-bar"></i> Laporan</a>
+          </li>
+        </ul>
+
+        <div class="user-info">
+          <span id="userName">Admin</span>
+          <span class="badge badge-info" id="userRole">Admin</span>
+          <button id="logoutBtn" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container" id="attendanceContent">
+      <h1 class="page-title">
+        <i class="fas fa-clipboard-check"></i> Manajemen Kehadiran
+      </h1>
+
+      <!-- Filter Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Filter Data</h2>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="filterDate">Tanggal</label>
+              <input type="date" id="filterDate" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label for="filterCategory">Kategori Praktikum</label>
+              <select id="filterCategory" class="form-control">
+                <option value="">Semua Kategori</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="filterStatus">Status</label>
+              <select id="filterStatus" class="form-control">
+                <option value="">Semua Status</option>
+                <option value="hadir">Sudah Diisi</option>
+                <option value="belum">Belum Diisi</option>
+              </select>
+            </div>
+          </div>
+          <button id="applyFilter" class="btn btn-primary">
+            <i class="fas fa-filter"></i> Terapkan Filter
+          </button>
+          <button id="resetFilter" class="btn btn-secondary">
+            <i class="fas fa-redo"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Attendance List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Daftar Jadwal untuk Input Kehadiran</h2>
+          <button id="bulkAttendance" class="btn btn-success">
+            <i class="fas fa-users"></i> Input Kehadiran Massal
+          </button>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tanggal & Waktu</th>
+                <th>Praktikum</th>
+                <th>Kelompok</th>
+                <th>Jumlah Anggota</th>
+                <th>Status Kehadiran</th>
+                <th>Present</th>
+                <th>Absent</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTable">
+              <tr>
+                <td colspan="9" class="text-center">
+                  <div class="spinner"></div>
+                  <p>Memuat data kehadiran...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Statistics Card -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="fas fa-calendar-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalScheduled">0</h3>
+            <p>Total Jadwal</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon success">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="attendanceFilled">0</h3>
+            <p>Kehadiran Terisi</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <i class="fas fa-user-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="attendancePending">0</h3>
+            <p>Menunggu Input</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon accent">
+            <i class="fas fa-percentage"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="attendanceRate">0%</h3>
+            <p>Rata-rata Kehadiran</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Attendance Modal -->
+    <div class="modal" id="attendanceModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="attendanceModalTitle">Input Kehadiran</h3>
+          <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="attendanceForm">
+            <input type="hidden" id="attendanceScheduleId" />
+            <input type="hidden" id="attendanceGroupId" />
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="attendanceDate">Tanggal Praktikum</label>
+                <input
+                  type="date"
+                  id="attendanceDate"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="praktikumName">Nama Praktikum</label>
+                <input
+                  type="text"
+                  id="praktikumName"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="groupName">Nama Kelompok</label>
+                <input
+                  type="text"
+                  id="groupName"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="totalMembers">Total Anggota</label>
+                <input
+                  type="number"
+                  id="totalMembers"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="presentCount">
+                  <i class="fas fa-user-check text-success"></i> Jumlah Hadir
+                </label>
+                <input
+                  type="number"
+                  id="presentCount"
+                  class="form-control"
+                  min="0"
+                  required
+                />
+                <small class="text-muted"
+                  >Masukkan jumlah anggota yang hadir</small
+                >
+              </div>
+              <div class="form-group">
+                <label for="absentCount">
+                  <i class="fas fa-user-times text-danger"></i> Jumlah Tidak
+                  Hadir
+                </label>
+                <input
+                  type="number"
+                  id="absentCount"
+                  class="form-control"
+                  min="0"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="attendanceNotes">
+                <i class="fas fa-sticky-note"></i> Catatan
+              </label>
+              <textarea
+                id="attendanceNotes"
+                class="form-control"
+                rows="3"
+                placeholder="Catatan khusus (alasan tidak hadir, dll)"
+              ></textarea>
+            </div>
+
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              Sistem akan otomatis menghitung jumlah tidak hadir berdasarkan
+              total anggota.
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="closeAttendanceModal"
+          >
+            Batal
+          </button>
+          <button type="button" class="btn btn-primary" id="saveAttendance">
+            <i class="fas fa-save"></i> Simpan Kehadiran
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Attendance Modal -->
+    <div class="modal" id="bulkAttendanceModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Input Kehadiran Massal</h3>
+          <button class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            Fitur ini akan mengisi kehadiran untuk semua jadwal yang belum
+            terisi pada tanggal terpilih.
+          </div>
+
+          <div class="form-group">
+            <label for="bulkDate">Tanggal</label>
+            <input type="date" id="bulkDate" class="form-control" required />
+          </div>
+
+          <div class="form-group">
+            <label for="defaultPresent">Default Jumlah Hadir (%)</label>
+            <input
+              type="range"
+              id="defaultPresent"
+              class="form-control"
+              min="0"
+              max="100"
+              value="85"
+            />
+            <div class="d-flex justify-content-between">
+              <span>0%</span>
+              <span id="presentPercentage">85%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <div id="bulkPreview">
+            <h4>Jadwal yang akan diisi:</h4>
+            <div class="table-container">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Praktikum</th>
+                    <th>Kelompok</th>
+                    <th>Hadir</th>
+                  </tr>
+                </thead>
+                <tbody id="bulkPreviewBody">
+                  <!-- Preview akan diisi oleh JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeBulkModal">
+            Batal
+          </button>
+          <button
+            type="button"
+            class="btn btn-success"
+            id="confirmBulkAttendance"
+          >
+            <i class="fas fa-check-double"></i> Konfirmasi & Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/attendance.js"></script>
+  </body>
+</html>
