@@ -45,3 +45,69 @@ Sistem digital untuk membantu UMKM (warung/kafe) dalam mengelola menu makanan & 
 - JWT stored in localStorage
 
 ## 📁 Struktur Folder
+Kelompok-4/
+│
+├── README.md
+│
+├── backend/
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── package.json
+│   ├── prisma/
+│   │   ├── schema.prisma
+│   │   └── migrations/
+│   └── src/
+│       ├── index.js
+│       ├── app.js
+│       ├── routes/
+│       │   ├── api.js
+│       │   ├── auth.routes.js
+│       │   ├── user.routes.js
+│       │   ├── menu.routes.js
+│       │   └── order.routes.js
+│       ├── controllers/
+│       │   ├── authController.js
+│       │   ├── userController.js
+│       │   ├── menuController.js
+│       │   └── orderController.js
+│       ├── middleware/
+│       │   ├── authMiddleware.js
+│       │   └── errorMiddleware.js
+│       └── utils/
+│           └── jwt.js
+│
+└── frontend/
+    ├── package.json
+    ├── index.html
+    ├── vite.config.js
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    └── src/
+        ├── main.jsx
+        ├── App.jsx
+        ├── index.css
+        ├── services/
+        │   └── api.js
+        ├── pages/
+        │   ├── Login.jsx
+        │   ├── Dashboard.jsx
+        │   ├── Menu.jsx
+        │   └── Orders.jsx
+        └── components/
+            ├── Header.jsx
+            ├── Sidebar.jsx
+            ├── MenuCard.jsx
+            └── OrderTable.jsx
+
+# Anggota Kelompok 4
+- Abdul Azis Arrizqi 230660221091
+- Muhammad Aulia Ramadhani 230660221013
+- Ade Yusup Maulana
+- Nisrina Salsabila
+
+# Link deploy Frontend
+https://projek-kelompok-4.netlify.app/
+
+# Localhost Backend
+mysql://root:@localhost:3306/umkm_db
+
