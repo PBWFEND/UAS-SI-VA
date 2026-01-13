@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Aplikasi Penjadwalan Praktikum</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header text-center mb-4">
+          <div class="logo">
+            <i class="fas fa-flask"></i>
+            <span>LabSchedule</span>
+          </div>
+          <h1 class="login-title">Aplikasi Penjadwalan Praktikum</h1>
+          <p class="text-muted">Masuk untuk mengelola jadwal praktikum</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="username"><i class="fas fa-user"></i> Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              placeholder="Masukkan username"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password"><i class="fas fa-lock"></i> Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-control"
+              placeholder="Masukkan password"
+              required
+            />
+          </div>
+
+          <div id="errorMsg" class="alert alert-error d-none"></div>
+
+          <button type="submit" id="loginBtn" class="btn btn-primary btn-block">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+        </form>
+
+        <div class="login-footer mt-4 text-center">
+          <p class="text-muted">
+            <i class="fas fa-info-circle"></i>
+            Default login: admin / admin123
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+  </body>
+</html>

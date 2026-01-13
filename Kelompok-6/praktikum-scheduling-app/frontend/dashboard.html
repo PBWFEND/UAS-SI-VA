@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Aplikasi Penjadwalan Praktikum</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar container">
+        <div class="logo">
+          <i class="fas fa-flask"></i>
+          <span>LabSchedule</span>
+        </div>
+
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html" class="active"
+              ><i class="fas fa-home"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="scheduling.html"
+              ><i class="fas fa-calendar-alt"></i> Penjadwalan</a
+            >
+          </li>
+          <li>
+            <a href="attendance.html"
+              ><i class="fas fa-clipboard-check"></i> Kehadiran</a
+            >
+          </li>
+          <li>
+            <a href="reports.html"><i class="fas fa-chart-bar"></i> Laporan</a>
+          </li>
+        </ul>
+
+        <div class="user-info">
+          <span id="userName">Admin</span>
+          <span class="badge badge-info" id="userRole">Admin</span>
+          <button id="logoutBtn" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container" id="dashboardContent">
+      <h1 class="page-title">Dashboard</h1>
+
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <i class="fas fa-calendar"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalSchedules">0</h3>
+            <p>Total Jadwal</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon secondary">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalGroups">0</h3>
+            <p>Kelompok Praktikum</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon accent">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="upcomingSchedules">0</h3>
+            <p>Jadwal Mendatang</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon warning">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="attendanceRate">0%</h3>
+            <p>Rata-rata Kehadiran</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Aksi Cepat</h2>
+        </div>
+        <div class="quick-actions">
+          <button id="quickSchedule" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Buat Jadwal Baru
+          </button>
+          <button id="quickAttendance" class="btn btn-secondary">
+            <i class="fas fa-clipboard-check"></i> Input Kehadiran
+          </button>
+          <button id="quickReport" class="btn btn-accent">
+            <i class="fas fa-file-export"></i> Generate Laporan
+          </button>
+        </div>
+      </div>
+
+      <!-- Today's Schedule -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Jadwal Hari Ini</h2>
+          <div class="date-navigation">
+            <button id="prevDate" class="btn btn-sm">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <span id="currentDate" class="mx-2">Rabu, 7 Januari 2026</span>
+            <button id="nextDate" class="btn btn-sm">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Praktikum</th>
+                <th>Kelompok</th>
+                <th>Ruangan</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="dateSchedules">
+              <tr>
+                <td colspan="6" class="text-center">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Upcoming Schedules -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Jadwal Mendatang</h2>
+        </div>
+        <div id="upcomingSchedulesList">
+          <div class="text-center py-3">
+            <div class="spinner"></div>
+            <p>Memuat data...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

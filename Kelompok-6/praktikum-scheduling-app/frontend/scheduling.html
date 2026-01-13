@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Penjadwalan - Aplikasi Penjadwalan Praktikum</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* Custom styles untuk form */
+      .form-section {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-title {
+        color: #3b82f6;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .input-group .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .input-group .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+      }
+
+      .btn-action {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+      }
+
+      .btn-success {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #059669;
+      }
+
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+
+      .schedule-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left: 4px solid #3b82f6;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .schedule-card h4 {
+        margin: 0 0 10px 0;
+        color: #333;
+      }
+
+      .schedule-card .details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .schedule-card .detail-item {
+        font-size: 14px;
+      }
+
+      .schedule-card .detail-item strong {
+        color: #666;
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-scheduled {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-completed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      /* Modal styles */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 10px;
+        max-width: 800px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .modal-footer {
+        padding: 20px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      /* Table styles */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .data-table th {
+        background: #f8fafc;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 2px solid #e5e7eb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      .data-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .data-table tr:hover {
+        background: #f9fafb;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar container">
+        <div class="logo">
+          <i class="fas fa-flask"></i>
+          <span>LabSchedule</span>
+        </div>
+
+        <ul class="nav-links">
+          <li>
+            <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+          </li>
+          <li>
+            <a href="scheduling.html" class="active"
+              ><i class="fas fa-calendar-alt"></i> Penjadwalan</a
+            >
+          </li>
+          <li>
+            <a href="attendance.html"
+              ><i class="fas fa-clipboard-check"></i> Kehadiran</a
+            >
+          </li>
+          <li>
+            <a href="reports.html"><i class="fas fa-chart-bar"></i> Laporan</a>
+          </li>
+        </ul>
+
+        <div class="user-info">
+          <span id="userName">Loading...</span>
+          <span class="badge badge-info" id="userRole">...</span>
+          <button id="logoutBtn" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <h1 class="page-title">
+        <i class="fas fa-calendar-alt"></i> Manajemen Penjadwalan
+      </h1>
+
+      <!-- Quick Actions -->
+      <div class="form-section">
+        <h3 class="form-title">Aksi Cepat</h3>
+        <div
+          class="quick-actions"
+          style="display: flex; gap: 10px; flex-wrap: wrap"
+        >
+          <button id="newScheduleBtn" class="btn-action btn-primary">
+            <i class="fas fa-plus-circle"></i> Buat Jadwal Baru
+          </button>
+          <button id="newGroupBtn" class="btn-action btn-success">
+            <i class="fas fa-users"></i> Buat Kelompok Baru
+          </button>
+          <button id="newCategoryBtn" class="btn-action btn-success">
+            <i class="fas fa-tags"></i> Tambah Kategori
+          </button>
+          <button
+            id="refreshDataBtn"
+            class="btn-action"
+            style="background: #6b7280; color: white"
+          >
+            <i class="fas fa-sync-alt"></i> Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule Form (akan ditampilkan saat tombol ditekan) -->
+      <div id="scheduleFormSection" class="form-section" style="display: none">
+        <h3 class="form-title" id="formTitle">Jadwal Baru</h3>
+
+        <form id="scheduleForm">
+          <input type="hidden" id="scheduleId" value="" />
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <!-- Kolom 1 -->
+            <div>
+              <div class="input-group">
+                <label for="praktikumCategory">
+                  <i class="fas fa-tags"></i> Kategori Praktikum *
+                </label>
+                <select id="praktikumCategory" class="form-control" required>
+                  <option value="">Pilih Kategori</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="groupSelect">
+                  <i class="fas fa-users"></i> Kelompok *
+                </label>
+                <select id="groupSelect" class="form-control" required>
+                  <option value="">Pilih Kelompok</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="scheduleDate">
+                  <i class="fas fa-calendar"></i> Tanggal *
+                </label>
+                <input
+                  type="date"
+                  id="scheduleDate"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="daySelect">
+                  <i class="fas fa-calendar-day"></i> Hari *
+                </label>
+                <select id="daySelect" class="form-control" required>
+                  <option value="">Pilih Hari</option>
+                  <option value="Senin">Senin</option>
+                  <option value="Selasa">Selasa</option>
+                  <option value="Rabu">Rabu</option>
+                  <option value="Kamis">Kamis</option>
+                  <option value="Jumat">Jumat</option>
+                  <option value="Sabtu">Sabtu</option>
+                  <option value="Minggu">Minggu</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Kolom 2 -->
+            <div>
+              <div class="input-group">
+                <label for="startTime">
+                  <i class="fas fa-clock"></i> Waktu Mulai *
+                </label>
+                <input
+                  type="time"
+                  id="startTime"
+                  class="form-control"
+                  value="08:00"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="endTime">
+                  <i class="fas fa-clock"></i> Waktu Selesai *
+                </label>
+                <input
+                  type="time"
+                  id="endTime"
+                  class="form-control"
+                  value="10:00"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="room">
+                  <i class="fas fa-door-open"></i> Ruangan
+                </label>
+                <select id="room" class="form-control">
+                  <option value="">Pilih Ruangan</option>
+                  <option value="Lab Fisika Dasar">Lab Fisika Dasar</option>
+                  <option value="Lab Kimia Dasar">Lab Kimia Dasar</option>
+                  <option value="Lab Biologi">Lab Biologi</option>
+                  <option value="Lab Komputer A">Lab Komputer A</option>
+                  <option value="Lab Komputer B">Lab Komputer B</option>
+                  <option value="Lab Elektronika">Lab Elektronika</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="instructor">
+                  <i class="fas fa-chalkboard-teacher"></i> Instruktur
+                </label>
+                <input
+                  type="text"
+                  id="instructor"
+                  class="form-control"
+                  placeholder="Nama instruktur"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="statusSelect">
+              <i class="fas fa-info-circle"></i> Status
+            </label>
+            <select id="statusSelect" class="form-control">
+              <option value="scheduled" selected>Terjadwal</option>
+              <option value="completed">Selesai</option>
+              <option value="cancelled">Dibatalkan</option>
+              <option value="postponed">Ditunda</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="scheduleNotes">
+              <i class="fas fa-sticky-note"></i> Catatan
+            </label>
+            <textarea
+              id="scheduleNotes"
+              class="form-control"
+              rows="3"
+              placeholder="Catatan tambahan..."
+            ></textarea>
+          </div>
+
+          <div
+            id="formFeedback"
+            class="alert"
+            style="display: none; margin-top: 15px"
+          ></div>
+        </form>
+
+        <div class="modal-footer" style="border: none; padding: 20px 0 0 0">
+          <button
+            type="button"
+            class="btn-action"
+            onclick="cancelScheduleForm()"
+            style="background: #6b7280; color: white"
+          >
+            <i class="fas fa-times"></i> Batal
+          </button>
+          <button
+            type="button"
+            class="btn-action btn-primary"
+            onclick="saveSchedule()"
+            id="saveScheduleBtn"
+          >
+            <i class="fas fa-save"></i> Simpan Jadwal
+          </button>
+        </div>
+      </div>
+
+      <!-- Group Form -->
+      <div id="groupFormSection" class="form-section" style="display: none">
+        <h3 class="form-title">Kelompok Baru</h3>
+
+        <form id="groupForm">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <div>
+              <div class="input-group">
+                <label for="groupName">Nama Kelompok *</label>
+                <input
+                  type="text"
+                  id="groupName"
+                  class="form-control"
+                  placeholder="Contoh: Kelompok 1-A"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="groupPraktikum">Kategori Praktikum *</label>
+                <select id="groupPraktikum" class="form-control" required>
+                  <option value="">Pilih Kategori</option>
+                </select>
+              </div>
+
+              <div class="input-group">
+                <label for="memberCount">Jumlah Anggota *</label>
+                <input
+                  type="number"
+                  id="memberCount"
+                  class="form-control"
+                  min="1"
+                  max="50"
+                  value="5"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <div class="input-group">
+                <label for="leaderName">Nama Ketua</label>
+                <input
+                  type="text"
+                  id="leaderName"
+                  class="form-control"
+                  placeholder="Nama ketua kelompok"
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="leaderNim">NIM Ketua</label>
+                <input
+                  type="text"
+                  id="leaderNim"
+                  class="form-control"
+                  placeholder="NIM ketua"
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="groupContact">Kontak</label>
+                <input
+                  type="text"
+                  id="groupContact"
+                  class="form-control"
+                  placeholder="Nomor telepon/WA"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="groupDescription">Deskripsi</label>
+            <textarea
+              id="groupDescription"
+              class="form-control"
+              rows="2"
+              placeholder="Deskripsi kelompok..."
+            ></textarea>
+          </div>
+
+          <div
+            id="groupFeedback"
+            class="alert"
+            style="display: none; margin-top: 15px"
+          ></div>
+        </form>
+
+        <div class="modal-footer" style="border: none; padding: 20px 0 0 0">
+          <button
+            type="button"
+            class="btn-action"
+            onclick="cancelGroupForm()"
+            style="background: #6b7280; color: white"
+          >
+            <i class="fas fa-times"></i> Batal
+          </button>
+          <button
+            type="button"
+            class="btn-action btn-success"
+            onclick="saveGroup()"
+            id="saveGroupBtn"
+          >
+            <i class="fas fa-save"></i> Simpan Kelompok
+          </button>
+        </div>
+      </div>
+
+      <!-- Category Form -->
+      <div id="categoryFormSection" class="form-section" style="display: none">
+        <h3 class="form-title">Kategori Praktikum Baru</h3>
+
+        <form id="categoryForm">
+          <div class="input-group">
+            <label for="categoryName">Nama Kategori *</label>
+            <input
+              type="text"
+              id="categoryName"
+              class="form-control"
+              placeholder="Contoh: Praktikum Fisika Lanjut"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="categoryDescription">Deskripsi</label>
+            <textarea
+              id="categoryDescription"
+              class="form-control"
+              rows="3"
+              placeholder="Deskripsi kategori praktikum..."
+            ></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px">
+            <div class="input-group">
+              <label for="maxParticipants">Maksimal Peserta</label>
+              <input
+                type="number"
+                id="maxParticipants"
+                class="form-control"
+                min="1"
+                max="50"
+                value="20"
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="durationHours">Durasi (Jam)</label>
+              <input
+                type="number"
+                id="durationHours"
+                class="form-control"
+                min="1"
+                max="8"
+                value="2"
+                step="0.5"
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Warna Kategori</label>
+            <div style="display: flex; gap: 10px; margin-top: 5px">
+              <div
+                class="color-option"
+                data-color="#3b82f6"
+                style="background: #3b82f6"
+              ></div>
+              <div
+                class="color-option"
+                data-color="#10b981"
+                style="background: #10b981"
+              ></div>
+              <div
+                class="color-option"
+                data-color="#8b5cf6"
+                style="background: #8b5cf6"
+              ></div>
+              <div
+                class="color-option"
+                data-color="#f59e0b"
+                style="background: #f59e0b"
+              ></div>
+              <div
+                class="color-option"
+                data-color="#ef4444"
+                style="background: #ef4444"
+              ></div>
+            </div>
+            <input type="hidden" id="categoryColor" value="#3b82f6" />
+          </div>
+
+          <div
+            id="categoryFeedback"
+            class="alert"
+            style="display: none; margin-top: 15px"
+          ></div>
+        </form>
+
+        <div class="modal-footer" style="border: none; padding: 20px 0 0 0">
+          <button
+            type="button"
+            class="btn-action"
+            onclick="cancelCategoryForm()"
+            style="background: #6b7280; color: white"
+          >
+            <i class="fas fa-times"></i> Batal
+          </button>
+          <button
+            type="button"
+            class="btn-action btn-success"
+            onclick="saveCategory()"
+            id="saveCategoryBtn"
+          >
+            <i class="fas fa-save"></i> Simpan Kategori
+          </button>
+        </div>
+      </div>
+
+      <!-- Schedule List -->
+      <div class="form-section">
+        <h3 class="form-title">Daftar Jadwal Praktikum</h3>
+
+        <div
+          style="
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+          "
+        >
+          <div style="flex: 1">
+            <input
+              type="text"
+              id="searchSchedule"
+              class="form-control"
+              placeholder="Cari jadwal..."
+              style="width: 100%"
+            />
+          </div>
+          <div>
+            <select id="filterStatus" class="form-control" style="width: 150px">
+              <option value="">Semua Status</option>
+              <option value="scheduled">Terjadwal</option>
+              <option value="completed">Selesai</option>
+              <option value="cancelled">Dibatalkan</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="schedulesList">
+          <div class="text-center" style="padding: 40px">
+            <div class="spinner"></div>
+            <p>Memuat data jadwal...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="form-section">
+        <h3 class="form-title">Statistik</h3>
+        <div class="stats-grid" id="statisticsGrid">
+          <div class="stat-card">
+            <div class="stat-icon primary">
+              <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="totalScheduled">0</h3>
+              <p>Total Jadwal</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="completedSchedules">0</h3>
+              <p>Selesai</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="upcomingSchedules">0</h3>
+              <p>Mendatang</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon danger">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3 id="cancelledSchedules">0</h3>
+              <p>Dibatalkan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Attendance Modal -->
+    <div id="attendanceModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Input Kehadiran</h3>
+          <button class="close-btn" onclick="closeModal('attendanceModal')">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="attendanceForm">
+            <input type="hidden" id="attendanceScheduleId" />
+            <input type="hidden" id="attendanceGroupId" />
+            <input type="hidden" id="attendancePraktikumId" />
+
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
+            >
+              <div class="input-group">
+                <label for="attendanceDate">Tanggal</label>
+                <input
+                  type="date"
+                  id="attendanceDate"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="attendanceTime">Waktu</label>
+                <input
+                  type="text"
+                  id="attendanceTime"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="attendancePraktikum">Praktikum</label>
+              <input
+                type="text"
+                id="attendancePraktikum"
+                class="form-control"
+                readonly
+              />
+            </div>
+
+            <div class="input-group">
+              <label for="attendanceGroup">Kelompok</label>
+              <input
+                type="text"
+                id="attendanceGroup"
+                class="form-control"
+                readonly
+              />
+            </div>
+
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px"
+            >
+              <div class="input-group">
+                <label for="presentCount">Jumlah Hadir *</label>
+                <input
+                  type="number"
+                  id="presentCount"
+                  class="form-control"
+                  min="0"
+                  required
+                />
+              </div>
+
+              <div class="input-group">
+                <label for="totalMembers">Total Anggota</label>
+                <input
+                  type="number"
+                  id="totalMembers"
+                  class="form-control"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="attendanceNotes">Catatan</label>
+              <textarea
+                id="attendanceNotes"
+                class="form-control"
+                rows="3"
+                placeholder="Catatan kehadiran..."
+              ></textarea>
+            </div>
+
+            <div
+              id="attendanceFeedback"
+              class="alert"
+              style="display: none; margin-top: 15px"
+            ></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-action"
+            onclick="closeModal('attendanceModal')"
+            style="background: #6b7280; color: white"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            class="btn-action btn-success"
+            onclick="saveAttendance()"
+            id="saveAttendanceBtn"
+          >
+            <i class="fas fa-save"></i> Simpan Kehadiran
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+      // Global data
+      let appData = {
+        categories: [],
+        groups: [],
+        schedules: [],
+        currentUser: null,
+      };
+
+      // Initialize app
+      document.addEventListener("DOMContentLoaded", async function () {
+        console.log("Initializing scheduling app...");
+
+        // Load user info
+        await loadUserInfo();
+
+        // Load initial data
+        await loadCategories();
+        await loadGroups();
+        await loadSchedules();
+
+        // Setup event listeners
+        setupEventListeners();
+
+        console.log("App initialized successfully");
+      });
+
+      // Load user info
+      async function loadUserInfo() {
+        try {
+          const response = await fetch("/api/current-user", {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const user = await response.json();
+            appData.currentUser = user;
+
+            document.getElementById("userName").textContent = user.name;
+            document.getElementById("userRole").textContent = user.role;
+          } else {
+            // Redirect to login if not authenticated
+            window.location.href = "/";
+          }
+        } catch (error) {
+          console.error("Error loading user info:", error);
+          window.location.href = "/";
+        }
+      }
+
+      // Load categories
+      async function loadCategories() {
+        try {
+          console.log("Loading categories...");
+          const response = await fetch("/api/categories", {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              appData.categories = result.data;
+              populateCategoryDropdowns();
+              console.log("Categories loaded:", appData.categories.length);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading categories:", error);
+          showAlert("Gagal memuat kategori", "error");
+        }
+      }
+
+      // Load groups
+      async function loadGroups() {
+        try {
+          console.log("Loading groups...");
+          const response = await fetch("/api/groups", {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              appData.groups = result.data;
+              populateGroupDropdown();
+              console.log("Groups loaded:", appData.groups.length);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading groups:", error);
+          showAlert("Gagal memuat kelompok", "error");
+        }
+      }
+
+      // Load schedules
+      async function loadSchedules() {
+        try {
+          console.log("Loading schedules...");
+          const response = await fetch("/api/schedules", {
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              appData.schedules = result.data;
+              renderSchedules();
+              updateStatistics();
+              console.log("Schedules loaded:", appData.schedules.length);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading schedules:", error);
+          showAlert("Gagal memuat jadwal", "error");
+        }
+      }
+
+      // Populate category dropdowns
+      function populateCategoryDropdowns() {
+        const categorySelect = document.getElementById("praktikumCategory");
+        const groupCategorySelect = document.getElementById("groupPraktikum");
+
+        if (!categorySelect || !groupCategorySelect) return;
+
+        let categoryOptions = '<option value="">Pilih Kategori</option>';
+        let groupCategoryOptions = '<option value="">Pilih Kategori</option>';
+
+        appData.categories.forEach((category) => {
+          categoryOptions += `<option value="${category.id}">${category.name}</option>`;
+          groupCategoryOptions += `<option value="${category.id}">${category.name}</option>`;
+        });
+
+        categorySelect.innerHTML = categoryOptions;
+        groupCategorySelect.innerHTML = groupCategoryOptions;
+      }
+
+      // Populate group dropdown
+      function populateGroupDropdown() {
+        const groupSelect = document.getElementById("groupSelect");
+        if (!groupSelect) return;
+
+        let options = '<option value="">Pilih Kelompok</option>';
+
+        appData.groups.forEach((group) => {
+          const categoryName = group.praktikum_name || "Tidak ada kategori";
+          options += `<option value="${group.id}" data-members="${group.member_count}">
+                    ${group.group_name} (${group.member_count} anggota) - ${categoryName}
+                </option>`;
+        });
+
+        groupSelect.innerHTML = options;
+      }
+
+      // Render schedules list
+      function renderSchedules() {
+        const container = document.getElementById("schedulesList");
+        if (!container) return;
+
+        const searchTerm =
+          document.getElementById("searchSchedule")?.value.toLowerCase() || "";
+        const filterStatus =
+          document.getElementById("filterStatus")?.value || "";
+
+        // Filter schedules
+        let filteredSchedules = appData.schedules;
+
+        if (searchTerm) {
+          filteredSchedules = filteredSchedules.filter(
+            (schedule) =>
+              schedule.praktikum_name?.toLowerCase().includes(searchTerm) ||
+              schedule.group_name?.toLowerCase().includes(searchTerm) ||
+              schedule.room?.toLowerCase().includes(searchTerm) ||
+              schedule.instructor?.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        if (filterStatus) {
+          filteredSchedules = filteredSchedules.filter(
+            (schedule) => schedule.status === filterStatus
+          );
+        }
+
+        if (filteredSchedules.length === 0) {
+          container.innerHTML = `
+                    <div class="text-center" style="padding: 40px;">
+                        <i class="fas fa-calendar-times" style="font-size: 48px; color: #9ca3af; margin-bottom: 20px;"></i>
+                        <h3 style="color: #6b7280; margin-bottom: 10px;">Tidak ada jadwal</h3>
+                        <p style="color: #9ca3af;">Mulai dengan membuat jadwal baru</p>
+                    </div>
+                `;
+          return;
+        }
+
+        // Sort by date (newest first)
+        filteredSchedules.sort(
+          (a, b) => new Date(b.schedule_date) - new Date(a.schedule_date)
+        );
+
+        let html = "";
+
+        filteredSchedules.forEach((schedule) => {
+          const statusClass = getStatusClass(schedule.status);
+          const statusText = getStatusText(schedule.status);
+
+          html += `
+                    <div class="schedule-card">
+                        <h4>${schedule.praktikum_name}</h4>
+                        <div class="details">
+                            <div class="detail-item">
+                                <strong>Tanggal</strong>
+                                ${formatDate(schedule.schedule_date)} (${
+            schedule.day
+          })
+                            </div>
+                            <div class="detail-item">
+                                <strong>Waktu</strong>
+                                ${schedule.start_time} - ${schedule.end_time}
+                            </div>
+                            <div class="detail-item">
+                                <strong>Kelompok</strong>
+                                ${schedule.group_name} (${
+            schedule.member_count
+          } anggota)
+                            </div>
+                            <div class="detail-item">
+                                <strong>Ruangan</strong>
+                                ${schedule.room || "Lab"}
+                            </div>
+                            <div class="detail-item">
+                                <strong>Instruktur</strong>
+                                ${schedule.instructor || "-"}
+                            </div>
+                            <div class="detail-item">
+                                <strong>Status</strong>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-action" onclick="editSchedule(${
+                              schedule.id
+                            })" 
+                                    style="background: #3b82f6; color: white;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn-action" onclick="deleteSchedule(${
+                              schedule.id
+                            })" 
+                                    style="background: #ef4444; color: white;">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                            ${
+                              schedule.status === "completed"
+                                ? `<button class="btn-action" onclick="viewAttendance(${schedule.id})" 
+                                        style="background: #10b981; color: white;">
+                                    <i class="fas fa-eye"></i> Lihat Kehadiran
+                                </button>`
+                                : `<button class="btn-action" onclick="openAttendanceModal(${schedule.id})" 
+                                        style="background: #f59e0b; color: white;">
+                                    <i class="fas fa-clipboard-check"></i> Input Kehadiran
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      // Update statistics
+      function updateStatistics() {
+        const totalScheduled = appData.schedules.length;
+        const completedSchedules = appData.schedules.filter(
+          (s) => s.status === "completed"
+        ).length;
+        const upcomingSchedules = appData.schedules.filter(
+          (s) =>
+            s.status === "scheduled" && new Date(s.schedule_date) >= new Date()
+        ).length;
+        const cancelledSchedules = appData.schedules.filter(
+          (s) => s.status === "cancelled"
+        ).length;
+
+        document.getElementById("totalScheduled").textContent = totalScheduled;
+        document.getElementById("completedSchedules").textContent =
+          completedSchedules;
+        document.getElementById("upcomingSchedules").textContent =
+          upcomingSchedules;
+        document.getElementById("cancelledSchedules").textContent =
+          cancelledSchedules;
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        // New schedule button
+        document
+          .getElementById("newScheduleBtn")
+          .addEventListener("click", openNewScheduleForm);
+
+        // New group button
+        document
+          .getElementById("newGroupBtn")
+          .addEventListener("click", openNewGroupForm);
+
+        // New category button
+        document
+          .getElementById("newCategoryBtn")
+          .addEventListener("click", openNewCategoryForm);
+
+        // Refresh button
+        document
+          .getElementById("refreshDataBtn")
+          .addEventListener("click", refreshAllData);
+
+        // Search input
+        document
+          .getElementById("searchSchedule")
+          ?.addEventListener("input", renderSchedules);
+
+        // Filter status
+        document
+          .getElementById("filterStatus")
+          ?.addEventListener("change", renderSchedules);
+
+        // Date change for schedule date
+        document
+          .getElementById("scheduleDate")
+          ?.addEventListener("change", function () {
+            if (this.value) {
+              const date = new Date(this.value);
+              const days = [
+                "Minggu",
+                "Senin",
+                "Selasa",
+                "Rabu",
+                "Kamis",
+                "Jumat",
+                "Sabtu",
+              ];
+              document.getElementById("daySelect").value = days[date.getDay()];
+            }
+          });
+
+        // Color picker
+        document.querySelectorAll(".color-option").forEach((option) => {
+          option.addEventListener("click", function () {
+            document.querySelectorAll(".color-option").forEach((opt) => {
+              opt.style.border = "none";
+            });
+            this.style.border = "2px solid #000";
+            document.getElementById("categoryColor").value = this.dataset.color;
+          });
+        });
+
+        // Set first color as selected
+        const firstColor = document.querySelector(".color-option");
+        if (firstColor) {
+          firstColor.style.border = "2px solid #000";
+        }
+      }
+
+      // Open new schedule form
+      function openNewScheduleForm() {
+        hideAllForms();
+
+        document.getElementById("formTitle").textContent = "Jadwal Baru";
+        document.getElementById("scheduleForm").reset();
+        document.getElementById("scheduleId").value = "";
+
+        // Set default values
+        const today = new Date();
+        document.getElementById("scheduleDate").value = today
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("daySelect").value = getDayName(today);
+        document.getElementById("startTime").value = "08:00";
+        document.getElementById("endTime").value = "10:00";
+        document.getElementById("statusSelect").value = "scheduled";
+
+        // Hide feedback
+        document.getElementById("formFeedback").style.display = "none";
+
+        // Show form
+        document.getElementById("scheduleFormSection").style.display = "block";
+      }
+
+      // Open new group form
+      function openNewGroupForm() {
+        hideAllForms();
+
+        document.getElementById("groupForm").reset();
+        document.getElementById("memberCount").value = 5;
+        document.getElementById("groupFeedback").style.display = "none";
+
+        document.getElementById("groupFormSection").style.display = "block";
+      }
+
+      // Open new category form
+      function openNewCategoryForm() {
+        hideAllForms();
+
+        document.getElementById("categoryForm").reset();
+        document.getElementById("maxParticipants").value = 20;
+        document.getElementById("durationHours").value = 2;
+        document.getElementById("categoryFeedback").style.display = "none";
+
+        document.getElementById("categoryFormSection").style.display = "block";
+      }
+
+      // Hide all forms
+      function hideAllForms() {
+        document.getElementById("scheduleFormSection").style.display = "none";
+        document.getElementById("groupFormSection").style.display = "none";
+        document.getElementById("categoryFormSection").style.display = "none";
+      }
+
+      // Save schedule
+      async function saveSchedule() {
+        const form = document.getElementById("scheduleForm");
+        const scheduleId = document.getElementById("scheduleId").value;
+        const saveBtn = document.getElementById("saveScheduleBtn");
+        const feedback = document.getElementById("formFeedback");
+
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        // Collect form data
+        const scheduleData = {
+          praktikum_id: document.getElementById("praktikumCategory").value,
+          group_id: document.getElementById("groupSelect").value,
+          schedule_date: document.getElementById("scheduleDate").value,
+          day: document.getElementById("daySelect").value,
+          start_time: document.getElementById("startTime").value,
+          end_time: document.getElementById("endTime").value,
+          room: document.getElementById("room").value,
+          instructor: document.getElementById("instructor").value,
+          status: document.getElementById("statusSelect").value,
+          notes: document.getElementById("scheduleNotes").value,
+        };
+
+        // Validate required fields
+        if (
+          !scheduleData.praktikum_id ||
+          !scheduleData.group_id ||
+          !scheduleData.schedule_date
+        ) {
+          showFeedback(
+            feedback,
+            "Harap isi semua field yang diperlukan",
+            "error"
+          );
+          return;
+        }
+
+        // Show loading
+        const originalText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+        try {
+          let response, result;
+
+          if (scheduleId) {
+            // Update existing schedule
+            response = await fetch(`/api/schedules/${scheduleId}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify(scheduleData),
+            });
+          } else {
+            // Create new schedule
+            response = await fetch("/api/schedules", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify(scheduleData),
+            });
+          }
+
+          result = await response.json();
+
+          if (result.success) {
+            showFeedback(
+              feedback,
+              result.message || "Jadwal berhasil disimpan!",
+              "success"
+            );
+
+            // Reload data after delay
+            setTimeout(async () => {
+              await loadSchedules();
+              hideAllForms();
+            }, 1500);
+          } else {
+            showFeedback(
+              feedback,
+              result.error || "Gagal menyimpan jadwal",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error saving schedule:", error);
+          showFeedback(
+            feedback,
+            "Terjadi kesalahan saat menyimpan jadwal",
+            "error"
+          );
+        } finally {
+          // Restore button
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalText;
+        }
+      }
+
+      // Save group
+      async function saveGroup() {
+        const form = document.getElementById("groupForm");
+        const saveBtn = document.getElementById("saveGroupBtn");
+        const feedback = document.getElementById("groupFeedback");
+
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        // Collect form data
+        const groupData = {
+          group_name: document.getElementById("groupName").value,
+          praktikum_id: document.getElementById("groupPraktikum").value,
+          member_count: parseInt(document.getElementById("memberCount").value),
+          leader_name: document.getElementById("leaderName").value || "",
+          leader_nim: document.getElementById("leaderNim").value || "",
+          contact: document.getElementById("groupContact").value || "",
+          notes: document.getElementById("groupDescription").value || "",
+        };
+
+        // Validate member count
+        if (groupData.member_count < 1 || groupData.member_count > 50) {
+          showFeedback(feedback, "Jumlah anggota harus antara 1-50", "error");
+          return;
+        }
+
+        // Show loading
+        const originalText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+        try {
+          const response = await fetch("/api/groups", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(groupData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showFeedback(
+              feedback,
+              result.message || "Kelompok berhasil disimpan!",
+              "success"
+            );
+
+            // Add new group to local data
+            if (result.data) {
+              appData.groups.push(result.data);
+              populateGroupDropdown();
+            }
+
+            // Close form after delay
+            setTimeout(() => {
+              hideAllForms();
+            }, 1500);
+          } else {
+            showFeedback(
+              feedback,
+              result.error || "Gagal menyimpan kelompok",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error saving group:", error);
+          showFeedback(
+            feedback,
+            "Terjadi kesalahan saat menyimpan kelompok",
+            "error"
+          );
+        } finally {
+          // Restore button
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalText;
+        }
+      }
+
+      // Save category
+      async function saveCategory() {
+        const form = document.getElementById("categoryForm");
+        const saveBtn = document.getElementById("saveCategoryBtn");
+        const feedback = document.getElementById("categoryFeedback");
+
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        // Collect form data
+        const categoryData = {
+          name: document.getElementById("categoryName").value,
+          description: document.getElementById("categoryDescription").value,
+          max_participants: parseInt(
+            document.getElementById("maxParticipants").value
+          ),
+          duration_hours: parseFloat(
+            document.getElementById("durationHours").value
+          ),
+          color_code: document.getElementById("categoryColor").value,
+        };
+
+        // Show loading
+        const originalText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+        try {
+          const response = await fetch("/api/categories", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(categoryData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showFeedback(
+              feedback,
+              result.message || "Kategori berhasil disimpan!",
+              "success"
+            );
+
+            // Reload categories after delay
+            setTimeout(async () => {
+              await loadCategories();
+              hideAllForms();
+            }, 1500);
+          } else {
+            showFeedback(
+              feedback,
+              result.error || "Gagal menyimpan kategori",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error saving category:", error);
+          showFeedback(
+            feedback,
+            "Terjadi kesalahan saat menyimpan kategori",
+            "error"
+          );
+        } finally {
+          // Restore button
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalText;
+        }
+      }
+
+      // Edit schedule
+      function editSchedule(id) {
+        const schedule = appData.schedules.find((s) => s.id === id);
+        if (!schedule) {
+          showAlert("Jadwal tidak ditemukan", "error");
+          return;
+        }
+
+        openNewScheduleForm();
+
+        document.getElementById("formTitle").textContent = "Edit Jadwal";
+        document.getElementById("scheduleId").value = schedule.id;
+        document.getElementById("praktikumCategory").value =
+          schedule.praktikum_id;
+        document.getElementById("groupSelect").value = schedule.group_id;
+        document.getElementById("scheduleDate").value = schedule.schedule_date;
+        document.getElementById("daySelect").value = schedule.day;
+        document.getElementById("startTime").value = schedule.start_time;
+        document.getElementById("endTime").value = schedule.end_time;
+        document.getElementById("room").value = schedule.room || "";
+        document.getElementById("instructor").value = schedule.instructor || "";
+        document.getElementById("statusSelect").value = schedule.status;
+        document.getElementById("scheduleNotes").value = schedule.notes || "";
+      }
+
+      // Delete schedule
+      async function deleteSchedule(id) {
+        if (!confirm("Apakah Anda yakin ingin menghapus jadwal ini?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/schedules/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showAlert("Jadwal berhasil dihapus", "success");
+            await loadSchedules();
+          } else {
+            showAlert(result.error || "Gagal menghapus jadwal", "error");
+          }
+        } catch (error) {
+          console.error("Error deleting schedule:", error);
+          showAlert("Terjadi kesalahan saat menghapus jadwal", "error");
+        }
+      }
+
+      // Open attendance modal
+      function openAttendanceModal(scheduleId) {
+        const schedule = appData.schedules.find((s) => s.id === scheduleId);
+        if (!schedule) {
+          showAlert("Jadwal tidak ditemukan", "error");
+          return;
+        }
+
+        document.getElementById("attendanceScheduleId").value = schedule.id;
+        document.getElementById("attendanceGroupId").value = schedule.group_id;
+        document.getElementById("attendancePraktikumId").value =
+          schedule.praktikum_id;
+        document.getElementById("attendanceDate").value =
+          schedule.schedule_date;
+        document.getElementById(
+          "attendanceTime"
+        ).value = `${schedule.start_time} - ${schedule.end_time}`;
+        document.getElementById("attendancePraktikum").value =
+          schedule.praktikum_name;
+        document.getElementById("attendanceGroup").value = schedule.group_name;
+        document.getElementById("totalMembers").value = schedule.member_count;
+        document.getElementById("presentCount").value = "";
+        document.getElementById("attendanceNotes").value = "";
+        document.getElementById("attendanceFeedback").style.display = "none";
+
+        document.getElementById("attendanceModal").style.display = "flex";
+      }
+
+      // Save attendance
+      async function saveAttendance() {
+        const form = document.getElementById("attendanceForm");
+        const saveBtn = document.getElementById("saveAttendanceBtn");
+        const feedback = document.getElementById("attendanceFeedback");
+
+        // Validate form
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        // Collect form data
+        const attendanceData = {
+          schedule_id: document.getElementById("attendanceScheduleId").value,
+          group_id: document.getElementById("attendanceGroupId").value,
+          praktikum_id: document.getElementById("attendancePraktikumId").value,
+          attendance_date: document.getElementById("attendanceDate").value,
+          present_count: parseInt(
+            document.getElementById("presentCount").value
+          ),
+          notes: document.getElementById("attendanceNotes").value,
+        };
+
+        // Calculate absent count
+        const total =
+          parseInt(document.getElementById("totalMembers").value) || 0;
+        const present = parseInt(attendanceData.present_count) || 0;
+        attendanceData.absent_count = total - present;
+
+        if (present < 0 || present > total) {
+          showFeedback(
+            feedback,
+            `Jumlah hadir harus antara 0-${total}`,
+            "error"
+          );
+          return;
+        }
+
+        // Show loading
+        const originalText = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+
+        try {
+          const response = await fetch("/api/attendance", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(attendanceData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showFeedback(
+              feedback,
+              result.message || "Kehadiran berhasil disimpan!",
+              "success"
+            );
+
+            // Close modal and reload data after delay
+            setTimeout(() => {
+              closeModal("attendanceModal");
+              loadSchedules();
+            }, 1500);
+          } else {
+            showFeedback(
+              feedback,
+              result.error || "Gagal menyimpan kehadiran",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Error saving attendance:", error);
+          showFeedback(
+            feedback,
+            "Terjadi kesalahan saat menyimpan kehadiran",
+            "error"
+          );
+        } finally {
+          // Restore button
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalText;
+        }
+      }
+
+      // View attendance
+      function viewAttendance(scheduleId) {
+        window.location.href = `attendance.html?schedule=${scheduleId}`;
+      }
+
+      // Cancel forms
+      function cancelScheduleForm() {
+        hideAllForms();
+      }
+
+      function cancelGroupForm() {
+        hideAllForms();
+      }
+
+      function cancelCategoryForm() {
+        hideAllForms();
+      }
+
+      // Refresh all data
+      async function refreshAllData() {
+        try {
+          await loadCategories();
+          await loadGroups();
+          await loadSchedules();
+          showAlert("Data berhasil diperbarui", "success");
+        } catch (error) {
+          console.error("Error refreshing data:", error);
+          showAlert("Gagal memperbarui data", "error");
+        }
+      }
+
+      // Close modal
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      // Helper functions
+      function getDayName(date) {
+        const days = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        return days[date.getDay()];
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      function getStatusClass(status) {
+        switch (status) {
+          case "completed":
+            return "status-completed";
+          case "cancelled":
+            return "status-cancelled";
+          case "scheduled":
+            return "status-scheduled";
+          default:
+            return "";
+        }
+      }
+
+      function getStatusText(status) {
+        switch (status) {
+          case "completed":
+            return "Selesai";
+          case "cancelled":
+            return "Dibatalkan";
+          case "scheduled":
+            return "Terjadwal";
+          case "postponed":
+            return "Ditunda";
+          default:
+            return status;
+        }
+      }
+
+      function showFeedback(element, message, type) {
+        element.textContent = message;
+        element.className = `alert alert-${type}`;
+        element.style.display = "block";
+
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+          element.style.display = "none";
+        }, 5000);
+      }
+
+      function showAlert(message, type = "info") {
+        // Remove existing alerts
+        const existingAlert = document.querySelector(".global-alert");
+        if (existingAlert) existingAlert.remove();
+
+        const alert = document.createElement("div");
+        alert.className = `global-alert alert alert-${type}`;
+        alert.innerHTML = `
+                ${message}
+                <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+            `;
+
+        document.body.insertBefore(alert, document.body.firstChild);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+          if (alert.parentElement) alert.remove();
+        }, 5000);
+      }
+
+      // Make functions available globally
+      window.openNewScheduleForm = openNewScheduleForm;
+      window.openNewGroupForm = openNewGroupForm;
+      window.openNewCategoryForm = openNewCategoryForm;
+      window.cancelScheduleForm = cancelScheduleForm;
+      window.cancelGroupForm = cancelGroupForm;
+      window.cancelCategoryForm = cancelCategoryForm;
+      window.saveSchedule = saveSchedule;
+      window.saveGroup = saveGroup;
+      window.saveCategory = saveCategory;
+      window.saveAttendance = saveAttendance;
+      window.editSchedule = editSchedule;
+      window.deleteSchedule = deleteSchedule;
+      window.openAttendanceModal = openAttendanceModal;
+      window.viewAttendance = viewAttendance;
+      window.closeModal = closeModal;
+      window.showAlert = showAlert;
+    </script>
+  </body>
+</html>
